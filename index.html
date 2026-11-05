@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Vivvá · Cartão de Todos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{color-scheme:light;box-sizing:border-box}
+body{margin:0;padding:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+:root {
+  --bg: #f4f7f2;
+  --panel: #ffffff;
+  --ink: #18261c;
+  --muted: #5b6b5f;
+  --line: #dde5dc;
+  --leaf: #2d7a4b;
+  --leaf-soft: #cfe6d6;
+  --mustard: #c99413;
+  --tomato: #c4513a;
+  --stone: #a7b3a9;
+  --warn-bg: #fbf1d8;
+  --font-display: "Young Serif", Georgia, "Times New Roman", serif;
+  --font-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-num: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111813; --panel: #18211a; --ink: #e6efe7; --muted: #9aaa9d; --line: #2a372d;
+    --leaf: #5cbf83; --leaf-soft: #23402e; --mustard: #e2b33f; --tomato: #e27a62; --stone: #5d6a60; --warn-bg: #3a3218;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111813; --panel: #18211a; --ink: #e6efe7; --muted: #9aaa9d; --line: #2a372d;
+  --leaf: #5cbf83; --leaf-soft: #23402e; --mustard: #e2b33f; --tomato: #e27a62; --stone: #5d6a60; --warn-bg: #3a3218;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1120px; margin-inline: auto; padding-block: 32px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 28px; }
+.num { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+
+header { display: flex; flex-direction: column; gap: 10px; }
+.eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--leaf); font-weight: 600; }
+h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(30px, 5vw, 44px); line-height: 1.1; margin: 0; text-wrap: balance; }
+.lede { margin: 0; max-width: 62ch; color: var(--muted); font-size: 16px; }
+.lede b { color: var(--ink); font-weight: 600; }
+.stamp { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.stamp::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--leaf); }
+
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.kpi { background: var(--panel); padding: 16px 18px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.kpi .l { font-size: 12px; color: var(--muted); letter-spacing: .02em; }
+.kpi .v { font-family: var(--font-display); font-size: 26px; line-height: 1.15; }
+.kpi .s { font-size: 12px; color: var(--muted); }
+.kpi.hero .v { color: var(--leaf); }
+
+h2 { font-family: var(--font-display); font-weight: 400; font-size: 24px; margin: 0; text-wrap: balance; }
+.sec { display: flex; flex-direction: column; gap: 14px; }
+.sec > p { margin: 0; color: var(--muted); max-width: 70ch; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.card h3 { margin: 0; font-size: 15px; font-weight: 600; }
+.card .note { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
+.chart { position: relative; width: 100%; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { font-family: var(--font-body); font-size: 11px; fill: var(--muted); }
+.chart .val { fill: var(--ink); font-family: var(--font-num); font-size: 11px; }
+.legend { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 8px 12px; font-size: 13px; }
+.legend li { display: flex; flex-direction: column; }
+.legend .k { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; }
+.legend .sw { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.keyrow { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--muted); }
+.keyrow span { display: inline-flex; align-items: center; gap: 6px; }
+
+.tip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.12); white-space: nowrap; z-index: 2; }
+.tip .t { color: var(--muted); }
+
+.tbl { overflow-x: auto; max-height: 30rem; overflow-y: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { position: sticky; top: 0; background: var(--panel); text-align: left; font-weight: 500; color: var(--muted); padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; z-index: 1; }
+td { padding: 8px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.r, th.r { text-align: right; }
+td.pos { color: var(--leaf); }
+.pill { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; background: var(--leaf-soft); color: var(--ink); }
+.pill.no { background: var(--warn-bg); }
+@media (max-width: 560px) { .hn { display: none; } }
+
+footer { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; max-width: 80ch; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Vivvá · Alimentação de Verdade</span>
+    <h1>Geladeira do Cartão de Todos</h1>
+    <p class="lede" id="lede"></p>
+    <span class="stamp" id="stamp"></span>
+  </header>
+
+  <section class="kpis" id="kpis" aria-label="Indicadores"></section>
+
+  <section class="grid">
+    <div class="card">
+      <h3>Vendas por dia</h3>
+      <p class="note">Preço cheio e o que entrou líquido no banco</p>
+      <div class="chart" id="ch-dias"></div>
+      <div class="keyrow"><span><i class="sw" style="background:var(--leaf-soft);width:10px;height:10px;border-radius:3px;display:inline-block"></i>Preço cheio</span><span><i class="sw" style="background:var(--leaf);width:10px;height:10px;border-radius:3px;display:inline-block"></i>Líquido no banco</span></div>
+    </div>
+    <div class="card">
+      <h3>Para onde vai o preço cheio</h3>
+      <p class="note">Vendas conferidas com o banco. O desconto ao cliente é pago pelo patrocinador.</p>
+      <div class="chart" id="ch-comp"></div>
+      <ul class="legend" id="lg-comp"></ul>
+    </div>
+    <div class="card">
+      <h3>Forma de pagamento</h3>
+      <p class="note">Preço cheio por forma de pagamento, segundo o banco</p>
+      <div class="chart" id="ch-pag"></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Venda a venda</h2>
+    <p>Cada venda registrada na geladeira, com o valor que o Banco Mais Todos repassou. As marcadas “Sem par” não aparecem no relatório do banco.</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Data</th><th>Hora</th><th>Pagamento</th><th class="r hn">Marmitas</th><th class="r">Preço cheio</th><th class="r hn">Taxas</th><th class="r hn">Cashback</th><th class="r">Líquido</th><th>Situação</th></tr></thead>
+        <tbody id="tb-vendas"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const D = {"ate":"05/11 13:01","resumo":{"pedidos":40,"marmitas":48,"bruto":841.3,"ticket":21.03,"conciliadas":38,"marmitas_conc":46,"bruto_conc":805.5,"desconto":56,"taxas":40.41,"cashback":59.9,"liquido":705.19,"cmv":593.4,"resultado":111.79,"margem":0.1387833643699573,"liquido_marmita":15.33,"aguardando":0,"aguardando_bruto":0,"sem_par":2,"a_conferir":26},"por_dia":[{"dia":"2026-10-26","liquido_conc":157.48,"bruto":179,"vendas":8},{"dia":"2026-10-27","liquido_conc":251.21,"bruto":304.3,"vendas":12},{"dia":"2026-10-28","liquido_conc":109.16,"bruto":125.3,"vendas":6},{"dia":"2026-10-29","liquido_conc":62.28,"bruto":71.6,"vendas":4},{"dia":"2026-10-30","liquido_conc":93.92,"bruto":107.4,"vendas":7},{"dia":"2026-11-03","liquido_conc":15.57,"bruto":35.8,"vendas":2},{"dia":"2026-11-04","liquido_conc":15.57,"bruto":17.9,"vendas":1}],"por_pagamento":[{"forma":"Pix","bruto":380.3,"vendas":22},{"forma":"Cartão de crédito","bruto":196.9,"vendas":6},{"forma":"Saldo de cashback + Cartão de crédito","bruto":138.8,"vendas":5},{"forma":"Saldo de cashback","bruto":125.3,"vendas":7}],"conciliacao":[{"data":"2026-10-26","hora":"12:14","forma":"Cartão de crédito","marmitas":2,"bruto":35.8,"taxas":1.79,"cashback":2.46,"liquido":31.55,"situacao":"Conciliada"},{"data":"2026-10-26","hora":"12:25","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.27,"liquido":15.73,"situacao":"Conciliada"},{"data":"2026-10-26","hora":"12:25","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.27,"liquido":15.73,"situacao":"Conciliada"},{"data":"2026-10-26","hora":"12:27","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.27,"liquido":15.73,"situacao":"Conciliada"},{"data":"2026-10-26","hora":"12:42","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.27,"liquido":15.73,"situacao":"Conciliada"},{"data":"2026-10-26","hora":"13:05","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.27,"liquido":15.73,"situacao":"Conciliada"},{"data":"2026-10-26","hora":"13:08","forma":"Cartão de crédito","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.27,"liquido":15.73,"situacao":"Conciliada"},{"data":"2026-10-26","hora":"15:35","forma":"Cartão de crédito","marmitas":2,"bruto":35.8,"taxas":1.79,"cashback":2.46,"liquido":31.55,"situacao":"Conciliada"},{"data":"2026-10-27","hora":"10:52","forma":"Cartão de crédito","marmitas":4,"bruto":71.6,"taxas":3.58,"cashback":5.09,"liquido":62.93,"situacao":"Conciliada"},{"data":"2026-10-27","hora":"11:33","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.27,"liquido":15.73,"situacao":"Conciliada"},{"data":"2026-10-27","hora":"11:42","forma":"Cartão de crédito","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.43,"liquido":15.57,"situacao":"Conciliada"},{"data":"2026-10-27","hora":"11:52","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.27,"liquido":15.73,"situacao":"Conciliada"},{"data":"2026-10-27","hora":"12:02","forma":"Saldo de cashback + Cartão de crédito","marmitas":1,"bruto":17.9,"taxas":0.89,"cashback":1.28,"liquido":15.73,"situacao":"Conciliada"},{"data":"2026-10-27","hora":"12:10","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.27,"liquido":15.73,"situacao":"Conciliada"},{"data":"2026-10-27","hora":"12:13","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":null,"cashback":0,"liquido":null,"situacao":"Sem par no banco"},{"data":"2026-10-27","hora":"12:13","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.43,"liquido":15.57,"situacao":"Conciliada"},{"data":"2026-10-27","hora":"12:49","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.43,"liquido":15.57,"situacao":"Conciliada"},{"data":"2026-10-27","hora":"13:03","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.43,"liquido":15.57,"situacao":"Conciliada"},{"data":"2026-10-27","hora":"13:06","forma":"Saldo de cashback","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.27,"liquido":15.73,"situacao":"Conciliada"},{"data":"2026-10-27","hora":"14:58","forma":"Saldo de cashback + Cartão de crédito","marmitas":3,"bruto":53.7,"taxas":2.69,"cashback":3.66,"liquido":47.35,"situacao":"Conciliada"},{"data":"2026-10-28","hora":"09:02","forma":"Saldo de cashback","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.27,"liquido":15.73,"situacao":"Conciliada"},{"data":"2026-10-28","hora":"12:05","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.43,"liquido":15.57,"situacao":"Conciliada"},{"data":"2026-10-28","hora":"12:15","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.43,"liquido":15.57,"situacao":"Conciliada"},{"data":"2026-10-28","hora":"12:29","forma":"Saldo de cashback + Cartão de crédito","marmitas":2,"bruto":35.8,"taxas":1.79,"cashback":2.86,"liquido":31.15,"situacao":"Conciliada"},{"data":"2026-10-28","hora":"13:01","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.43,"liquido":15.57,"situacao":"Conciliada"},{"data":"2026-10-28","hora":"15:27","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.43,"liquido":15.57,"situacao":"Conciliada"},{"data":"2026-10-29","hora":"07:52","forma":"Saldo de cashback","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.43,"liquido":15.57,"situacao":"Conciliada"},{"data":"2026-10-29","hora":"10:47","forma":"Saldo de cashback","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.43,"liquido":15.57,"situacao":"Conciliada"},{"data":"2026-10-29","hora":"11:45","forma":"Cartão de crédito","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.43,"liquido":15.57,"situacao":"Conciliada"},{"data":"2026-10-29","hora":"12:47","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.43,"liquido":15.57,"situacao":"Conciliada"},{"data":"2026-10-30","hora":"08:55","forma":"Saldo de cashback","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.43,"liquido":15.57,"situacao":"Conciliada"},{"data":"2026-10-30","hora":"11:24","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.43,"liquido":15.57,"situacao":"Conciliada"},{"data":"2026-10-30","hora":"11:40","forma":"Saldo de cashback + Cartão de crédito","marmitas":1,"bruto":13.5,"taxas":0.67,"cashback":0.92,"liquido":11.91,"situacao":"Conciliada"},{"data":"2026-10-30","hora":"11:42","forma":"Pix","marmitas":1,"bruto":4.4,"taxas":0.22,"cashback":0.35,"liquido":3.83,"situacao":"Conciliada"},{"data":"2026-10-30","hora":"12:00","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.27,"liquido":15.73,"situacao":"Conciliada"},{"data":"2026-10-30","hora":"12:15","forma":"Saldo de cashback + Cartão de crédito","marmitas":1,"bruto":17.9,"taxas":0.89,"cashback":1.43,"liquido":15.58,"situacao":"Conciliada"},{"data":"2026-10-30","hora":"12:32","forma":"Saldo de cashback","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.27,"liquido":15.73,"situacao":"Conciliada"},{"data":"2026-11-03","hora":"07:58","forma":"Saldo de cashback","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.43,"liquido":15.57,"situacao":"Conciliada"},{"data":"2026-11-03","hora":"11:34","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":null,"cashback":0,"liquido":null,"situacao":"Sem par no banco"},{"data":"2026-11-04","hora":"11:40","forma":"Pix","marmitas":1,"bruto":17.9,"taxas":0.9,"cashback":1.43,"liquido":15.57,"situacao":"Conciliada"}]};
+const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+const brl0 = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+const pct = new Intl.NumberFormat('pt-BR', { style: 'percent', maximumFractionDigits: 0 });
+const int = new Intl.NumberFormat('pt-BR');
+const MES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+const curta = (iso) => { const p = iso.split('-'); return Number(p[2]) + ' ' + MES[Number(p[1]) - 1]; };
+const br = (iso) => { const p = iso.split('-'); return p[2] + '/' + p[1]; };
+const NS = 'http://www.w3.org/2000/svg';
+const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+const h = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const R = D.resumo;
+
+const lede = document.getElementById('lede');
+lede.append(int.format(R.pedidos) + ' vendas e ' + int.format(R.marmitas) + ' marmitas desde a abertura, somando ');
+lede.append(h('b', '', brl.format(R.bruto)));
+lede.append(' a preço cheio. Depois de taxas e cashback entraram ');
+lede.append(h('b', '', brl.format(R.liquido)));
+lede.append(' no banco e, descontado o custo das marmitas, sobraram ');
+lede.append(h('b', '', brl.format(R.resultado)));
+lede.append(' (' + pct.format(R.margem) + ' do preço cheio).');
+document.getElementById('stamp').textContent = 'Números até ' + D.ate.replace(' ', ' às ') + ' de 2026';
+
+function kpis(id, items) {
+  const box = document.getElementById(id);
+  items.forEach(([l, v, s, hero]) => {
+    const k = h('div', 'kpi' + (hero ? ' hero' : ''));
+    k.append(h('span', 'l', l), h('span', 'v num', v));
+    if (s) k.append(h('span', 's', s));
+    box.append(k);
+  });
+}
+kpis('kpis', [
+  ['Líquido no banco', brl.format(R.liquido), brl.format(R.liquido_marmita) + ' por marmita', true],
+  ['Resultado', brl.format(R.resultado), 'Líquido − R$ 12,90 por marmita'],
+  ['Preço cheio', brl.format(R.bruto), 'Ticket médio ' + brl.format(R.ticket)],
+  ['Vendas', int.format(R.pedidos), int.format(R.marmitas) + ' marmitas'],
+  ['Taxas do banco', brl.format(R.taxas), pct.format(R.taxas / R.bruto_conc) + ' do preço cheio'],
+  ['Cashback', brl.format(R.cashback), pct.format(R.cashback / R.bruto_conc) + ' do preço cheio'],
+]);
+
+function tipper(box) {
+  const t = h('div', 'tip'); t.hidden = true; box.append(t);
+  return {
+    show(x, y, title, lines) {
+      t.replaceChildren(h('div', 't', title), ...lines.map((l) => h('div', 'num', l)));
+      t.hidden = false;
+      const w = t.offsetWidth, bw = box.clientWidth;
+      t.style.left = Math.max(0, Math.min(bw - w, x - w / 2)) + 'px';
+      t.style.top = Math.max(0, y - t.offsetHeight - 8) + 'px';
+    },
+    hide() { t.hidden = true; },
+  };
+}
+function measure(svg, s) { const t = el('text', {}, svg); t.textContent = s; const w = t.getComputedTextLength(); t.remove(); return w; }
+
+function drawDias() {
+  const box = document.getElementById('ch-dias'); box.replaceChildren();
+  const rows = D.por_dia;
+  const W = Math.max(280, box.clientWidth), H = 220, top = 18, bot = 26;
+  const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': 'Vendas por dia' }, box);
+  const max = Math.max(...rows.map((r) => r.bruto));
+  const step = max > 200 ? 100 : 50;
+  const top_v = Math.ceil(max * 1.1 / step) * step;
+  const ticks = []; for (let v = 0; v <= top_v; v += step) ticks.push(v);
+  const ml = Math.ceil(Math.max(...ticks.map((t) => measure(svg, brl0.format(t))))) + 8;
+  const y = (v) => H - bot - (v / top_v) * (H - bot - top);
+  ticks.forEach((t) => {
+    el('line', { x1: ml, x2: W, y1: y(t), y2: y(t), stroke: 'var(--line)' }, svg);
+    const tx = el('text', { x: ml - 6, y: y(t), 'text-anchor': 'end', 'dominant-baseline': 'middle' }, svg); tx.textContent = brl0.format(t);
+  });
+  const band = (W - ml) / rows.length, bw = Math.min(22, band * 0.32);
+  const tip = tipper(box);
+  rows.forEach((r, i) => {
+    const cx = ml + band * i + band / 2;
+    el('rect', { x: cx - bw - 1, y: y(r.bruto), width: bw, height: y(0) - y(r.bruto), rx: 3, fill: 'var(--leaf-soft)' }, svg);
+    el('rect', { x: cx + 1, y: y(r.liquido_conc), width: bw, height: y(0) - y(r.liquido_conc), rx: 3, fill: 'var(--leaf)' }, svg);
+    const lx = el('text', { x: cx, y: H - 8, 'text-anchor': 'middle' }, svg); lx.textContent = curta(r.dia);
+    const hit = el('rect', { x: ml + band * i, y: top, width: band, height: H - bot - top, fill: 'transparent' }, svg);
+    hit.addEventListener('mousemove', () => tip.show(cx * box.clientWidth / W, y(r.bruto) * box.clientWidth / W, curta(r.dia) + ' · ' + r.vendas + (r.vendas === 1 ? ' venda' : ' vendas'), ['Preço cheio ' + brl.format(r.bruto), 'Líquido ' + brl.format(r.liquido_conc)]));
+    hit.addEventListener('mouseleave', () => tip.hide());
+  });
+}
+
+function drawComp() {
+  const box = document.getElementById('ch-comp'); box.replaceChildren();
+  const parts = [
+    ['Resultado', Math.max(0, R.resultado), 'var(--leaf)'],
+    ['Custo das marmitas', R.cmv, 'var(--mustard)'],
+    ['Cashback', R.cashback, 'var(--tomato)'],
+    ['Taxas', R.taxas, 'var(--stone)'],
+  ];
+  const tot = parts.reduce((s, p) => s + p[1], 0);
+  const W = Math.max(280, box.clientWidth), H = 56;
+  const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': 'Divisão do preço cheio' }, box);
+  let x = 0;
+  parts.forEach(([k, v, c]) => {
+    const w = (v / tot) * W;
+    el('rect', { x: x + 1, y: 4, width: Math.max(1, w - 2), height: 44, rx: 4, fill: c }, svg);
+    if (w > 46) { const t = el('text', { x: x + w / 2, y: 26, 'text-anchor': 'middle', 'dominant-baseline': 'middle', class: 'val', style: 'fill:var(--bg)' }, svg); t.textContent = pct.format(v / tot); }
+    x += w;
+  });
+  const lg = document.getElementById('lg-comp'); lg.replaceChildren();
+  parts.forEach(([k, v, c]) => {
+    const li = h('li'); const kk = h('span', 'k'); const sw = h('i', 'sw'); sw.style.background = c; kk.append(sw, k);
+    li.append(kk, h('span', 'num', brl.format(v))); lg.append(li);
+  });
+}
+
+function hbars(id, rows, label, value, color) {
+  const box = document.getElementById(id); box.replaceChildren();
+  const W = Math.max(280, box.clientWidth), rh = 34, H = rows.length * rh + 4;
+  const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img' }, box);
+  const lw = Math.ceil(Math.max(...rows.map((r) => measure(svg, label(r))))) + 12;
+  const vw = Math.ceil(Math.max(...rows.map((r) => measure(svg, brl.format(value(r)))))) + 12;
+  const max = Math.max(...rows.map(value));
+  rows.forEach((r, i) => {
+    const yy = i * rh + 4;
+    const t = el('text', { x: 0, y: yy + 13, 'dominant-baseline': 'middle', style: 'fill:var(--ink)' }, svg); t.textContent = label(r);
+    const w = Math.max(2, (value(r) / max) * (W - lw - vw));
+    el('rect', { x: lw, y: yy + 3, width: w, height: 20, rx: 4, fill: color }, svg);
+    const v = el('text', { x: lw + w + 8, y: yy + 13, 'dominant-baseline': 'middle', class: 'val' }, svg); v.textContent = brl.format(value(r));
+  });
+}
+
+function draw() {
+  drawDias();
+  drawComp();
+  hbars('ch-pag', D.por_pagamento, (r) => r.forma, (r) => r.bruto, 'var(--leaf)');
+}
+
+const tb = document.getElementById('tb-vendas');
+[...D.conciliacao].reverse().forEach((r) => {
+  const tr = h('tr');
+  const ok = r.situacao === 'Conciliada';
+  const cells = [br(r.data), r.hora, r.forma, int.format(r.marmitas), brl.format(r.bruto), r.taxas == null ? '—' : brl.format(r.taxas), r.cashback == null ? '—' : brl.format(r.cashback), r.liquido == null ? '—' : brl.format(r.liquido)];
+  const cls = ['num', 'num', '', 'r num hn', 'r num', 'r num hn', 'r num hn', 'r num'];
+  cells.forEach((c, i) => tr.append(h('td', cls[i], c)));
+  const td = h('td'); td.append(h('span', 'pill' + (ok ? '' : ' no'), ok ? 'Conciliada' : 'Sem par')); tr.append(td);
+  tb.append(tr);
+});
+
+document.getElementById('foot').textContent = 'Fontes: vendas registradas pela Vivvá e relatório de transações do Banco Mais Todos. Resultado considera o custo de R$ 12,90 por marmita fornecida pela Cozinha De La Corte, antes de impostos. ' + int.format(R.conciliadas) + ' das ' + int.format(R.pedidos) + ' vendas foram conferidas com o banco.';
+
+draw();
+let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(draw, 120); });
+</script>
+</body>
+</html>
